@@ -17,7 +17,7 @@ const getUserById = (req, res, next) => {
       res.send(user);
     })
     .catch(next);
-}
+};
 
 const updateUser = (req, res, next) => {
   const { name, about } = req.body;
