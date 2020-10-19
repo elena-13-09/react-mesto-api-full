@@ -36,6 +36,26 @@ const limiter = rateLimit({
 // применить ко всем запросам
 app.use(limiter);
 
+// Массив разешённых доменов
+const allowedCors = [
+  'https://api.goreva.students.nomoreparties.xyz',
+  'http://api.goreva.students.nomoreparties.xyz',
+  'https://www.api.goreva.students.nomoreparties.xyz',
+  'http://www.api.goreva.students.nomoreparties.xyz',
+  'localhost:3000'
+];
+
+app.use(function(req, res, next) {
+  const { origin } = req.headers; // Записываем в переменную origin соответствующий заголовок
+
+  if (allowedCors.includes(origin)) { // Проверяем, что значение origin есть среди разрешённых доменов
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+  }
+
+  next();
+});
+
 app.use(requestLogger); // подключаем логгер запросов
 
 app.post('/signin', celebrate({
