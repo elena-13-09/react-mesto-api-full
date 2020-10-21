@@ -17,19 +17,11 @@ module.exports.createUser = (req, res, next) => {
     }))
 
     .catch((err) => {
-      if (err.code === 11000) {
+      if (err.name === 'MongoError' || err.code === 11000) {
         throw new ConflictError('Пользователь с таким email уже зарегистрирован');
       } else next(err);
     })
-    .then((user) => {
-      res.status(201).send({
-        email: user.email,
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        _id: user._id,
-      });
-    })
+    .then((user) => res.send({ message: `Зарегистрирован пользователь ${user.email}` }))
     .catch(next);
 };
 
@@ -41,9 +33,7 @@ module.exports.login = (req, res, next) => {
       // создадим токен
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' });
-
-      // вернём токен
-      res.send({ token });
+      res.send({ message: 'Пользователь авторизован' });
     })
     .catch(next);
 };
