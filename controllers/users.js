@@ -44,8 +44,7 @@ const login = (req, res, next) => {
 };
 
 const getUserMe = (req, res, next) => {
-  const { email } = req.body;
-  User.findById(req.user._id, { email })
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
@@ -81,7 +80,6 @@ const updateUser = (req, res, next) => {
       next(err);
     });
 };
-
 
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
