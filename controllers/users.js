@@ -44,7 +44,8 @@ const login = (req, res, next) => {
 };
 
 const getUserMe = (req, res, next) => {
-  User.findById(req.user._id)
+  const { email } = req.body;
+  User.findById(req.user._id, { email })
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
