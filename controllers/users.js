@@ -19,6 +19,17 @@ const getUserById = (req, res, next) => {
     .catch(next);
 };
 
+const getUserMe = (req, res, next) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Пользователь не найден');
+      }
+      res.send(user);
+    })
+    .catch(next);
+};
+
 const updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about },
@@ -57,4 +68,5 @@ module.exports = {
   getUserById,
   updateUser,
   updateAvatar,
+  getUserMe,
 };
