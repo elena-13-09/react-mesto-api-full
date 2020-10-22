@@ -1,6 +1,10 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const ValidationError = require('../errors/validation-err');
+const ConflictError = require('../errors/conflict-err');
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUsers = (req, res) => {
   User.find({})
@@ -8,22 +12,53 @@ const getUsers = (req, res) => {
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
-const getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
+const createUser = (req, res, next) => {
+  const { email, password, name, about, avatar, } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      email,
+      password: hash,
+      name,
+      about,
+      avatar,
+    }))
+    .catch((err) => {
+      if (err.name === 'MongoError' || err.code === 11000) {
+        throw new ConflictError('Пользователь с таким email уже зарегистрирован');
+      } else next(err);
+    })
+    .then((user) => res.send({ message: `Зарегистрирован пользователь ${user.email}` }))
+    .catch(next);
+};
+
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // вернём токен
+      res.send({
+        token: jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' })
+      });
+    })
+    .catch(next);
+};
+
+const getUserMe = (req, res, next) => {
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Нет пользователя с таким id');
+        throw new NotFoundError('Пользователь не найден');
       }
       res.send(user);
     })
     .catch(next);
 };
 
-const getUserMe = (req, res, next) => {
-  User.find({})
+const getUserById = (req, res, next) => {
+  User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь не найден');
+        throw new NotFoundError('Нет пользователя с таким id');
       }
       res.send(user);
     })
@@ -69,4 +104,6 @@ module.exports = {
   updateUser,
   updateAvatar,
   getUserMe,
+  createUser,
+  login,
 };
