@@ -1,16 +1,15 @@
 require('dotenv').config();
-console.log(process.env.NODE_ENV);
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
-const auth = require('./middlewares/auth');
+const { celebrate, Joi, errors } = require('celebrate');
+const { auth } = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-err');
-const { celebrate, Joi, errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
@@ -79,10 +78,8 @@ app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
 
-  res.status(statusCode).send({
-    // проверяем статус и выставляем сообщение в зависимости от него
-    message: statusCode === 500 ? 'На сервере произошла ошибка' : message
-  });
+  // проверяем статус и выставляем сообщение в зависимости от него
+  res.status(statusCode).send({ message: statusCode === 500 ? 'На сервере произошла ошибка' : message });
   next();
 });
 
@@ -90,5 +87,3 @@ app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
   console.log(`App listening on port ${PORT}`);
 });
-
-

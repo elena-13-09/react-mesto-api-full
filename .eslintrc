@@ -9,6 +9,10 @@
         ]
       }
     ],
-    "no-console": "off"
+    "no-console": "off",
+    "func-names": [
+      "error",
+      "never"
+    ]
   }
 }

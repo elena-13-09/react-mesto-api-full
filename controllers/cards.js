@@ -3,11 +3,10 @@ const NotFoundError = require('../errors/not-found-err');
 const ValidationError = require('../errors/validation-err');
 const OwnerError = require('../errors/owner-err');
 
-
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.status(200).send(cards))
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .then((cards) => res.send(cards))
+    .catch(next);
 };
 
 const createCard = (req, res, next) => {
