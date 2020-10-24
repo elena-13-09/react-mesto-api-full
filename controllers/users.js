@@ -50,8 +50,9 @@ const getUserMe = (req, res, next) => {
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
+      } else {
+        res.send(user);
       }
-      res.send(user);
     })
     .catch(next);
 };
@@ -61,8 +62,9 @@ const getUserById = (req, res, next) => {
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
+      } else {
+        res.send(user);
       }
-      res.send(user);
     })
     .catch(next);
 };
@@ -77,9 +79,10 @@ const updateUser = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError(err.message));
+        throw new ValidationError(err.message);
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -93,9 +96,10 @@ const updateAvatar = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError(err.message));
+        throw new ValidationError(err.message);
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
