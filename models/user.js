@@ -22,17 +22,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: 'Имя',
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: 'О себе',
   },
   avatar: {
     type: String,
-    default: 'https://images.unsplash.com/photo-1602600220542-f3b3b7f3bf1c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
     validate: {
       validator(v) {
         return /^(https?:\/\/)?([a-zA-z0-9%$=?/.-]+)\.([a-zA-z0-9%$=?/.-]+)?(#)?$/.test(v);
