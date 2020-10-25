@@ -25,7 +25,7 @@ const createUser = (req, res, next) => {
       avatar,
     }))
     .catch((err) => {
-      if (err.name === 'MongoError' || err.code === 11000) {
+      if (err.name === 'MongoError' && err.code === 11000) {
         throw new ConflictError('Пользователь с таким email уже зарегистрирован');
       } else next(err);
     })
