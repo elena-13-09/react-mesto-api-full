@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 // Для хеширования пароля
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
+const isURL = require('validator/lib/isURL');
 const AuthorizationError = require('../errors/authorization-err');
 
 const userSchema = new mongoose.Schema({
@@ -31,10 +32,7 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     validate: {
-      validator(v) {
-        return /^(https?:\/\/)?([a-zA-z0-9%$=?/.-]+)\.([a-zA-z0-9%$=?/.-]+)?(#)?$/.test(v);
-      },
-      message: (props) => `${props.value} Некорректная ссылка`,
+      validator: (v) => isURL(v), message: 'Некорректная ссылка',
     },
   },
 }, { versionKey: false });
