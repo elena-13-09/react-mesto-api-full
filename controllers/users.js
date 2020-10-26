@@ -79,7 +79,7 @@ const updateUser = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError(err.message);
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -96,7 +96,7 @@ const updateAvatar = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError(err.message);
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
