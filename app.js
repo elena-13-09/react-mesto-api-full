@@ -23,6 +23,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+app.use(cors());
+
 app.use(bodyParser.json()); // для собирания JSON-формата
 app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
 
@@ -35,8 +37,6 @@ const limiter = rateLimit({
 
 // применить ко всем запросам
 app.use(limiter);
-
-app.use(cors());
 
 app.use(requestLogger); // подключаем логгер запросов
 
