@@ -20,9 +20,9 @@ const createUser = (req, res, next) => {
     .then((hash) => User.create({
       email,
       password: hash,
-      name,
-      about,
-      avatar,
+      name: name || 'Имя',
+      about: about || 'О себе',
+      avatar: avatar || 'https://images.unsplash.com/photo-1609355998606-31299b9ca5a3?ixid=MXwxMjA3fDB8MHx0b3BpYy1mZWVkfDEwNHw2c01WalRMU2tlUXx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     }))
     .catch((err) => {
       if (err.name === 'MongoError' && err.code === 11000) {
